@@ -1,6 +1,9 @@
 import { useState } from 'react'
 import './App.css'
 import { usePasswordGenerator } from './hooks/usePasswordGenerator'
+import PasswordStrengthIndicator from './components/strengthCheck'
+import Button from './components/Button'
+import Checkbox from './components/Checkbox'
 
 function App() {
 
@@ -16,7 +19,6 @@ const [copy, setCopy] = useState(false)
 
 
 const handleCheckboxChange = (i)=>{
-console.log(checkboxData[i])
 const updateC = [...checkboxData]
 updateC[i].state = !updateC[i].state
 setCheckboxData(updateC)
@@ -40,10 +42,13 @@ const {password, errorMessage, generatePassword} = usePasswordGenerator()
       {/* password text and copy */}
       <span className='title' style={{fontSize:30}}>Password Generator with React</span>
       <div className='container'>
+        <div className='passCon'>
       { password && <div className='header'>
         <div className='title'>{password}</div>
-        <button className='copyBtn' onClick={handleCopy}>{copy?"Copied":"Copy"}</button>
+
+        <Button onClick={handleCopy} text={copy?"Copied":"Copy"} customClass="copyBtn" />
       </div>}
+        </div>
 
 
       {/* Character length */}
@@ -59,16 +64,18 @@ const {password, errorMessage, generatePassword} = usePasswordGenerator()
       {/* checkboxes */}
       <div className='checkboxes'>
         {checkboxData.map((checkbox,index)=>(
-          <div key={index}>
-            <input type="checkbox" onChange={()=>handleCheckboxChange(index)} checked={checkbox.state}/>
-            <label htmlFor="">{checkbox.title}</label>
-          </div>
+        <Checkbox
+        key={index}
+        title={checkbox.title}
+        onChange={()=>handleCheckboxChange(index)}
+           state={checkbox.state}
+        />
         ))}
       </div>
 
 
       {/* {strength} */}
-
+      <PasswordStrengthIndicator password={password}/>
 
 
       {/* error handling */}
@@ -76,7 +83,7 @@ const {password, errorMessage, generatePassword} = usePasswordGenerator()
 
 
       {/* Generate Button  */}
-      <button className='generateBtn' onClick={()=>generatePassword(checkboxData,length)}>Generate Password</button>
+     <Button customClass="generateBtn"text="Generate Password" onClick={()=>generatePassword(checkboxData,length)}/>
       </div>
     </div>
     </>
